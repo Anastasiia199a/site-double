@@ -174,10 +174,29 @@ summary::after{content:"+";color:var(--accent);font-size:26px;line-height:.9;tra
 details[open] summary::after{transform:rotate(45deg)}
 details p{padding:0 28px 28px;color:var(--ink-2);max-width:640px}
 
-/* CTA + FOOTER */
-.cta{text-align:center}
-.cta h2{margin:0 auto 24px;max-width:14ch}
-.cta p{max-width:520px;margin:0 auto 40px;color:var(--ink-2)}
+/* APPLICATION FORM + FOOTER */
+.apply{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(32px,6vw,100px);align-items:start}
+.apply h2{margin-bottom:24px}
+.apply .intro-p{max-width:440px;color:var(--ink-2);margin-bottom:28px}
+.apply .perks{list-style:none;display:grid;gap:12px;font-size:15px}
+.apply .perks li{display:flex;gap:12px}
+.apply .perks li::before{content:"";flex:none;width:8px;height:8px;margin-top:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.form{background:rgba(20,20,20,.6);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:clamp(22px,3vw,40px);display:grid;gap:18px}
+.field{display:grid;gap:8px}
+.field label{font-size:14px;color:var(--ink-2)}
+.field input,.field select,.field textarea{font:inherit;color:var(--ink);background:#0b0b0b;border:1px solid #2a2a2a;border-radius:10px;padding:14px 16px;width:100%;transition:border-color .25s,box-shadow .3s}
+.field textarea{min-height:110px;resize:vertical}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23ff4d1a' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:12px;padding-right:40px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,77,26,.18)}
+.field input:user-invalid{border-color:#c0392b}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.form .btn{width:100%;border:0;cursor:pointer;padding-block:18px;font-size:16px}
+.form .btn[disabled]{opacity:.6;cursor:wait}
+.form-status{font-size:15px;min-height:1.5em}
+.form-status.ok{color:#7ddc9a}
+.form-status.err{color:#ff8a6b}
+.consent{font-size:13px;color:var(--ink-2)}
 footer{padding:60px var(--m) 28px;overflow:hidden}
 .foot-top{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--ink-2);margin-bottom:40px}
 .foot-top nav{display:flex;gap:28px}
@@ -226,7 +245,7 @@ footer{padding:60px var(--m) 28px;overflow:hidden}
   .btn-dark{flex:1}
   .stats{justify-content:stretch}
   .stat{flex:1}
-  .intro,.faq{grid-template-columns:1fr}
+  .intro,.faq,.apply{grid-template-columns:1fr}
   .faq h2{position:static}
   .feats,.plans{grid-template-columns:1fr}
   .plan.pro{transform:none}
@@ -238,7 +257,7 @@ footer{padding:60px var(--m) 28px;overflow:hidden}
   .lead{text-align:left}
 }
 @media (max-width:480px){
-  .track{grid-template-columns:1fr}
+  .track,.row2{grid-template-columns:1fr}
   summary{font-size:17px;padding:22px 20px}
   details p{padding:0 20px 22px}
 }
@@ -406,7 +425,7 @@ footer{padding:60px var(--m) 28px;overflow:hidden}
         <li>1 revision round</li>
         <li>Delivery in 7 days</li>
       </ul>
-      <a class="btn" href="mailto:hello@twinly.ai?subject=Starter%20twin%20(%24300)&body=Hi!%20I%27d%20like%20to%20start%20with%20the%20Starter%20package.">Start with Starter</a>
+      <a class="btn" href="#apply" data-plan="Starter ($300)">Start with Starter</a>
     </article>
     <article class="plan pro rv" data-price="1000" data-reels="40" data-unit="/ month">
       <div class="badge"><svg viewBox="0 0 24 24" fill="#000"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
@@ -422,7 +441,7 @@ footer{padding:60px var(--m) 28px;overflow:hidden}
         <li>2 avatar looks with different outfits and sets</li>
         <li>Unlimited revisions, priority queue</li>
       </ul>
-      <a class="btn" href="mailto:hello@twinly.ai?subject=Pro%20twin%20(%241%2C000%2Fmo)&body=Hi!%20I%27d%20like%20the%20Pro%20package.">Go Pro</a>
+      <a class="btn" href="#apply" data-plan="Pro ($1,000 / month)">Go Pro</a>
     </article>
     <article class="plan rv" data-price="2500" data-reels="120" data-unit="/ month">
       <div class="badge"><svg viewBox="0 0 24 24" fill="#ddd"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-9Z"/></svg></div>
@@ -438,7 +457,7 @@ footer{padding:60px var(--m) 28px;overflow:hidden}
         <li>Monthly analytics review and plan reset</li>
         <li>Dedicated producer, 24h turnaround</li>
       </ul>
-      <a class="btn" href="mailto:hello@twinly.ai?subject=Elite%20twin%20(%242%2C500%2Fmo)&body=Hi!%20I%27d%20like%20to%20talk%20about%20the%20Elite%20package.">Book Elite call</a>
+      <a class="btn" href="#apply" data-plan="Elite ($2,500 / month)">Book Elite call</a>
     </article>
   </div>
   <p class="note rv">Your avatar and voice model belong to you. Cancel monthly plans any time.</p>
@@ -458,11 +477,42 @@ footer{padding:60px var(--m) 28px;overflow:hidden}
   </div>
 </section>
 
-<!-- CTA -->
-<section class="sec wrap cta" aria-labelledby="cta-h">
-  <h2 class="h2 rv" id="cta-h">Stop filming<br><span class="dim">Start posting</span></h2>
-  <p class="rv">Book a 15-minute call. We'll show you a test reel made from your public videos before you pay anything.</p>
-  <a class="btn btn-accent rv" href="mailto:hello@twinly.ai?subject=Book%20a%20call%20%E2%80%94%20AI%20twin">Book a free call</a>
+<!-- APPLICATION FORM -->
+<section class="sec wrap" id="apply" aria-labelledby="cta-h">
+  <div class="apply">
+    <div>
+      <h2 class="h2" id="cta-h">Stop filming<br><span class="dim">Start posting</span></h2>
+      <p class="intro-p">Leave a request and we'll get back to you within 24 hours. We'll show you a test reel made from your public videos before you pay anything.</p>
+      <ul class="perks">
+        <li>15-minute call, no obligation</li>
+        <li>A free test reel with your twin</li>
+        <li>A plan matched to your niche and goals</li>
+      </ul>
+    </div>
+    <form class="form" id="leadForm" novalidate>
+      <div class="row2">
+        <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="f-contact">Telegram, WhatsApp or phone</label><input id="f-contact" name="contact" autocomplete="tel"></div>
+        <div class="field"><label for="f-plan">Plan</label>
+          <select id="f-plan" name="plan">
+            <option>Not sure yet</option>
+            <option>Starter ($300)</option>
+            <option>Pro ($1,000 / month)</option>
+            <option>Elite ($2,500 / month)</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label for="f-social">Instagram or TikTok link</label><input id="f-social" name="social" placeholder="@yourname"></div>
+      <div class="field"><label for="f-msg">What do you want your twin to post?</label><textarea id="f-msg" name="message"></textarea></div>
+      <div class="hp" aria-hidden="true"><label>Leave empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn" type="submit">Send request</button>
+      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+      <p class="consent">By sending the form you agree that we contact you about your request.</p>
+    </form>
+  </div>
 </section>
 </main>
 
@@ -580,6 +630,50 @@ document.fonts && document.fonts.ready.then(setGrow);
     if (visible) raf = requestAnimationFrame(frame);
   }).observe(canvas);
 })();
+
+// application form -> Google Apps Script (writes a row to Google Sheets and emails you)
+// Paste your Web app URL here after deploying apps-script/Code.gs (see INSTRUCTIONS.md)
+const SCRIPT_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
+const form = document.getElementById('leadForm');
+const formStatus = document.getElementById('formStatus');
+
+// pricing buttons preselect their plan in the form
+document.querySelectorAll('[data-plan]').forEach(a => a.addEventListener('click', () => {
+  document.getElementById('f-plan').value = a.dataset.plan;
+}));
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  formStatus.className = 'form-status';
+  if (!form.checkValidity()) {
+    formStatus.textContent = 'Please fill in your name and a valid email.';
+    formStatus.classList.add('err');
+    form.querySelector(':invalid').focus();
+    return;
+  }
+  if (!SCRIPT_URL.startsWith('https://')) {
+    formStatus.textContent = 'The form is not connected yet: add the Google Apps Script URL.';
+    formStatus.classList.add('err');
+    return;
+  }
+  const btn = form.querySelector('button');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  const data = new URLSearchParams(new FormData(form));
+  data.append('page', location.href);
+  try {
+    const res = await fetch(SCRIPT_URL, {method: 'POST', body: data});
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'Request failed');
+    form.reset();
+    formStatus.textContent = 'Thank you! Your request is sent. We will reply within 24 hours.';
+    formStatus.classList.add('ok');
+  } catch (err) {
+    formStatus.textContent = 'Something went wrong. Please try again in a minute.';
+    formStatus.classList.add('err');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Send request';
+  }
+});
 
 // price per reel toggle
 const sw = document.getElementById('perReel');
