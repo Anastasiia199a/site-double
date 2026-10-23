@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>twinly AI Twins</title>
+<meta name="description" content="twinly builds AI digital twins of you — your face, your voice — that record scroll-stopping reels without you ever touching a camera.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505; --surface:#101010; --surface-2:#161616; --line:#232323;
+  --ink:#ededed; --ink-2:#a3a3a3; --ghost:#2f2f2f;
+  --accent:#ff4d1a; --accent-soft:rgba(255,77,26,.35);
+  --m:clamp(16px,2.2vw,32px);
+  --ease:cubic-bezier(.2,.7,.1,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{background:var(--bg);color:var(--ink);font-family:"Schibsted Grotesk",system-ui,sans-serif;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+::selection{background:var(--accent);color:#000}
+.wrap{padding-inline:var(--m);max-width:1600px;margin-inline:auto}
+
+/* NAV */
+.nav{position:absolute;inset:0 0 auto 0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:26px var(--m)}
+.logo{font-size:28px;font-weight:500;letter-spacing:-.04em}
+.logo b{font-weight:500;color:var(--accent)}
+.nav ul{display:flex;gap:44px;list-style:none;font-size:14px;color:var(--ink-2)}
+.nav ul a{position:relative;padding-bottom:8px;transition:color .25s}
+.nav ul a:hover,.nav ul a.on{color:var(--ink)}
+.nav ul a.on::after{content:"";position:absolute;left:20%;right:20%;bottom:0;height:2px;background:var(--accent);border-radius:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 34px;font-size:15px;font-weight:500;transition:transform .2s var(--ease),background .25s,color .25s,box-shadow .3s}
+.btn:active{transform:scale(.97)}
+.btn-light{background:var(--ink);color:#000}
+.btn-light:hover{background:#fff;box-shadow:0 0 30px rgba(255,255,255,.18)}
+.btn-dark{background:#2a2a2a;color:var(--ink);min-width:220px;padding-block:22px;position:relative}
+.btn-dark::after{content:"";position:absolute;left:10%;right:10%;bottom:-1px;height:2px;background:var(--accent);filter:blur(3px);opacity:.8}
+.btn-dark:hover{background:#333}
+.btn-accent{background:var(--accent);color:#000}
+.btn-accent:hover{background:#ff6a3d;box-shadow:0 0 40px var(--accent-soft)}
+
+/* HERO */
+.hero{position:relative;min-height:max(100vh,820px);overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;left:50%;bottom:-10%;width:900px;height:900px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(255,77,26,.08),transparent 70%);z-index:-1}
+.hero h1{position:absolute;inset:150px 0 auto 0;text-align:center;font-weight:400;letter-spacing:-.065em;line-height:.82;pointer-events:none}
+.hero h1 .l1{font-size:clamp(38px,13.4vw,215px);color:#c9c9c9;white-space:nowrap}
+.hero h1 span{display:table;margin-inline:auto;pointer-events:auto;cursor:default}
+/* headings grow by exactly 4px of font size on hover; --grow is set per heading in JS */
+.feat h3,.plan h3,.step h3{transition:scale .45s var(--ease);transform-origin:left center}
+.feat h3:hover,.plan h3:hover,.step h3:hover{scale:var(--grow,1.03)}
+/* two-line section headings: the top line grows at once,
+   then 1s later the bottom line slips up into it and floats back out, grown */
+:root{--smooth:cubic-bezier(.22,1,.36,1)}
+.h2 .top,.h2 .dim{display:inline-block;transform-origin:left center}
+.cta .h2 .top,.cta .h2 .dim{transform-origin:center}
+.h2 .top{transition:scale .9s var(--smooth)}
+.h2:hover .top{scale:var(--grow,1.03)}
+.h2:hover .dim{animation:emerge 1.4s var(--smooth) 1s forwards}
+.h2.touched:not(:hover) .dim{animation:settle .9s var(--smooth)}
+/* hero headline: on hover it fades out over 3s, then fades back in over 3s */
+.hero h1:hover .l1,.hero h1:hover .l2{animation:fadecycle 6s ease-in-out}
+@keyframes fadecycle{0%,100%{opacity:1}50%{opacity:0}}
+/* robot: on hover it dissolves to 20% and smoothly returns, 4s in total */
+.figure:hover img{animation:dissolve 4s ease-in-out}
+@keyframes dissolve{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes emerge{
+  0%{translate:0 0;scale:1;opacity:1}
+  30%{translate:0 -38%;scale:.97;opacity:0}
+  100%{translate:0 0;scale:var(--grow,1.03);opacity:1}
+}
+@keyframes settle{from{scale:var(--grow,1.03)}to{scale:1}}
+.hero h1 .l2{font-size:clamp(34px,12.4vw,200px);white-space:nowrap;color:var(--ghost);margin-top:.02em}
+.figure{position:absolute;left:50%;top:calc(150px + 6vw);width:clamp(480px,62vw,980px);transform:translateX(-50%);z-index:2}
+.figure::before{content:"";position:absolute;left:50%;top:38%;width:70%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,92,26,.75),rgba(255,77,26,.28) 45%,transparent 72%);filter:blur(30px);opacity:0;scale:.85;transition:opacity .6s var(--ease),scale .8s var(--ease);z-index:-1;pointer-events:none}
+.figure:hover::before{opacity:1;scale:1}
+.figure img{position:relative;display:block;width:100%;height:auto;-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}
+.hero-side{position:absolute;z-index:3;left:var(--m);top:clamp(390px,36vw,540px);max-width:250px}
+.hero-side p{font-size:15px;color:var(--ink);line-height:1.45}
+.hero-bottom{position:absolute;z-index:3;left:var(--m);right:var(--m);bottom:56px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.hero-bottom::before{content:"";position:absolute;left:0;right:0;top:-48px;height:1px;background:linear-gradient(90deg,transparent,#2a2a2a 20%,#2a2a2a 80%,transparent)}
+.chips{display:flex;gap:8px;margin-bottom:28px}
+.chip{border:1px solid #3a3a3a;border-radius:999px;padding:9px 22px;font-size:13px;transition:border-color .25s,color .25s}
+.chip:hover{border-color:var(--accent);color:#fff}
+.actions{display:flex;align-items:center;gap:52px}
+.play{display:inline-flex;align-items:center;gap:12px;font-size:18px;color:var(--ink-2);transition:color .2s}
+.play:hover{color:#fff}
+.play span{width:0;height:0;border-left:11px solid currentColor;border-top:7px solid transparent;border-bottom:7px solid transparent;transition:transform .2s}
+.play:hover span{transform:translateX(4px)}
+.stats{display:flex;gap:18px;align-items:flex-end}
+.mini{width:120px;height:140px;margin-bottom:24px}
+.stat{width:152px;height:142px;border:1px solid #2a2a2a;background:linear-gradient(160deg,#131313,#060606);padding:16px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.stat::before{content:"";position:absolute;right:-1px;top:-1px;width:40px;height:40px;border-top:1px solid var(--accent);border-right:1px solid var(--accent);opacity:.7}
+.stat b{font-size:36px;font-weight:400;letter-spacing:-.04em;text-align:right;line-height:1}
+.stat span{font-size:13px;color:var(--ink-2);line-height:1.2}
+
+/* SECTIONS */
+section{position:relative}
+.sec{padding-block:clamp(100px,13vw,200px)}
+.h2{font-size:clamp(38px,5.4vw,82px);font-weight:400;letter-spacing:-.05em;line-height:.95;text-transform:uppercase}
+.h2 .dim{color:var(--ghost)}
+.lead{font-size:15px;color:var(--ink-2);max-width:300px;text-align:right}
+.head-row{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-bottom:64px}
+
+/* INTRO */
+.intro{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(32px,5vw,80px);align-items:center}
+.intro h2{margin-bottom:28px}
+.intro p{max-width:520px;margin-bottom:36px}
+.chipcard{position:relative;aspect-ratio:4/3;background:#0a0a0a;overflow:hidden}
+.chipcard svg{width:100%;height:100%;display:block}
+
+/* FEATURES */
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px)}
+.feat{padding:28px 28px 40px;min-height:360px;display:flex;flex-direction:column}
+.feat.raised{background:var(--surface)}
+.ico{width:42px;height:42px;background:var(--accent);display:grid;place-items:center;border-radius:6px;margin-bottom:auto}
+.ico svg{width:20px;height:20px}
+.feat h3{font-size:30px;font-weight:400;line-height:1;letter-spacing:-.03em;text-transform:uppercase;margin:90px 0 18px}
+.feat p{font-size:15px;color:var(--ink-2);max-width:300px}
+
+/* PROCESS */
+.process{background:#0b0b0b}
+.track{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2vw,28px);position:relative}
+.track::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:#1f1f1f}
+.track .bar{position:absolute;left:0;top:9px;height:2px;width:100%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.step{position:relative;padding-top:48px}
+.step::before{content:"";position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.step .t{font-size:clamp(40px,4vw,64px);letter-spacing:-.05em;line-height:1;margin-bottom:14px}
+.step h3{font-size:20px;font-weight:500;margin-bottom:10px}
+.step p{font-size:15px;color:var(--ink-2)}
+
+/* PRICING */
+#pricing > :not(.noise){position:relative;z-index:1}
+.noise{position:absolute;top:0;left:50%;width:100vw;height:100%;translate:-50% 0;pointer-events:none;opacity:.9;-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
+.toggle{display:inline-flex;align-items:center;gap:14px;font-size:14px;color:var(--ink-2);margin-top:22px}
+.switch{width:46px;height:26px;border-radius:999px;background:#262626;position:relative;transition:background .25s}
+.switch::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:var(--ink);transition:transform .25s var(--ease)}
+.switch[aria-checked="true"]{background:var(--accent)}
+.switch[aria-checked="true"]::after{transform:translateX(20px)}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,24px);align-items:stretch}
+.plan{border:1px solid rgba(255,255,255,.09);border-radius:16px;background:linear-gradient(180deg,rgba(20,20,20,.42) 0%,rgba(8,8,8,.3) 60%);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);padding:clamp(24px,2.4vw,36px);display:flex;flex-direction:column}
+.plan.pro{transform:translateY(-14px);border-color:rgba(255,77,26,.35);box-shadow:0 30px 80px -40px var(--accent-soft)}
+.price b{transition:opacity .25s}
+.badge{width:34px;height:34px;border-radius:50%;background:#262626;display:grid;place-items:center;margin-bottom:28px}
+.pro .badge{background:var(--accent)}
+.badge svg{width:16px;height:16px}
+.plan h3{font-size:28px;font-weight:400;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:10px}
+.plan .for{font-size:15px;color:var(--ink-2);min-height:48px}
+.price{margin:34px 0 36px;display:flex;align-items:baseline;gap:10px;min-height:62px}
+.price b{font-size:clamp(44px,4vw,58px);font-weight:400;letter-spacing:-.04em;line-height:1}
+.price span{color:var(--ink-2);font-size:16px}
+.plan h4{font-size:22px;font-weight:400;margin-bottom:18px}
+.plan ul{list-style:none;display:grid;gap:12px;margin-bottom:40px;flex:1}
+.plan li{display:flex;gap:12px;font-size:15px;line-height:1.35}
+.plan li::before{content:"";flex:none;width:16px;height:16px;margin-top:1px;border-radius:50%;border:1.5px solid #8a8a8a;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.6-4.8' fill='none' stroke='%23bbb' stroke-width='1.6'/%3E%3C/svg%3E") center/12px no-repeat}
+.pro li::before{border-color:var(--accent)}
+.plan .btn{border:1px solid rgba(255,255,255,.16);border-radius:8px;background:rgba(10,10,10,.45);width:100%}
+.plan .btn:hover{background:rgba(30,30,30,.7);border-color:rgba(255,255,255,.3)}
+.pro .btn{border-color:var(--accent)}
+.pro .btn:hover{background:var(--accent);color:#000}
+.note{font-size:14px;color:var(--ink-2);margin-top:40px;text-align:center}
+
+/* FAQ */
+.faq{display:grid;grid-template-columns:1fr 1.4fr;gap:clamp(32px,6vw,100px)}
+.faq h2{position:sticky;top:40px;align-self:start}
+details{background:var(--surface);margin-bottom:10px;transition:background .25s}
+details:hover{background:var(--surface-2)}
+summary{list-style:none;cursor:pointer;padding:26px 28px;font-size:20px;display:flex;justify-content:space-between;gap:20px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent);font-size:26px;line-height:.9;transition:transform .3s var(--ease)}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 28px 28px;color:var(--ink-2);max-width:640px}
+
+/* CTA + FOOTER */
+.cta{text-align:center}
+.cta h2{margin:0 auto 24px;max-width:14ch}
+.cta p{max-width:520px;margin:0 auto 40px;color:var(--ink-2)}
+footer{padding:60px var(--m) 28px;overflow:hidden}
+.foot-top{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--ink-2);margin-bottom:40px}
+.foot-top nav{display:flex;gap:28px}
+.foot-top a:hover{color:#fff}
+.big{font-size:clamp(90px,25vw,400px);letter-spacing:-.08em;line-height:.8;color:#141414;text-align:center;user-select:none;font-weight:500}
+.big b{color:#2a0e05;font-weight:500}
+
+/* ONE LOAD SEQUENCE: the twin "boots up" — headline, then the figure rises, then its lights switch on */
+.hero h1 .l1,.hero h1 .l2,.hero .rv{animation:rise 1s var(--ease) both}
+.hero h1 .l2{animation-delay:.15s}
+.figure{animation:lift 1.4s var(--ease) .3s both}
+.figure img{animation:boot 1.3s ease-out 1.2s both}
+.hero .rv{animation-delay:1.1s}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}}
+@keyframes lift{from{opacity:0;translate:0 60px}}
+@keyframes boot{0%{filter:brightness(.35)}35%{filter:brightness(1.2)}50%{filter:brightness(.5)}100%{filter:brightness(1)}}
+
+/* ORANGE HOVER GLOW on every button and link-button */
+.btn,.chip,.switch{transition:transform .2s var(--ease),background .25s,color .25s,border-color .25s,box-shadow .35s}
+.chip:hover,.switch:hover{box-shadow:0 0 0 1px rgba(255,77,26,.7),0 0 26px rgba(255,77,26,.45),0 0 60px rgba(255,77,26,.18)}
+.chip:hover{border-color:var(--accent)}
+/* every main button is orange; on hover a 2px orange spread makes it exactly 2px bigger on each side */
+.btn,.btn-light,.btn-dark,.btn-accent,.plan .btn,.pro .btn{background:var(--accent);color:#000;border-color:var(--accent)}
+.btn-dark::after{display:none}
+.btn:hover,.plan .btn:hover,.pro .btn:hover{background:var(--accent);color:#000;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent),0 0 28px rgba(255,77,26,.55),0 0 70px rgba(255,77,26,.22)}
+.play{transition:color .25s,text-shadow .35s}
+.play:hover{color:#ffb08a;text-shadow:0 0 18px rgba(255,77,26,.8)}
+.nav ul a{transition:color .25s,text-shadow .35s}
+.nav ul a:hover{text-shadow:0 0 16px rgba(255,77,26,.7)}
+
+/* RESPONSIVE */
+@media (max-width:1100px){
+  .nav ul{gap:26px}
+  .mini{display:none}
+}
+@media (max-width:860px){
+  .nav ul{display:none}
+  .hero{min-height:auto;padding-top:120px;display:flex;flex-direction:column}
+  .hero h1{position:relative;inset:auto;margin-bottom:-6vw}
+  .figure{position:relative;left:auto;top:auto;transform:none;width:100%;margin:0 auto;order:2}
+  .hero-side{position:relative;left:auto;top:auto;max-width:none;padding:0 var(--m);order:3;margin-top:28px}
+  .hero-side p{font-size:17px}
+  .hero-bottom{position:relative;left:auto;right:auto;bottom:auto;order:4;flex-direction:column;align-items:stretch;padding:32px var(--m) 56px}
+  .hero-bottom::before{display:none}
+  .actions{gap:28px}
+  .btn-dark{flex:1}
+  .stats{justify-content:stretch}
+  .stat{flex:1}
+  .intro,.faq{grid-template-columns:1fr}
+  .faq h2{position:static}
+  .feats,.plans{grid-template-columns:1fr}
+  .plan.pro{transform:none}
+  .feat{min-height:0}
+  .feat h3{margin-top:48px}
+  .track{grid-template-columns:1fr 1fr;row-gap:48px}
+  .track::before,.track .bar{display:none}
+  .head-row{flex-direction:column;align-items:flex-start}
+  .lead{text-align:left}
+}
+@media (max-width:480px){
+  .track{grid-template-columns:1fr}
+  summary{font-size:17px;padding:22px 20px}
+  details p{padding:0 20px 22px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a href="#" class="logo" aria-label="twinly home">twinl<b>y</b></a>
+  <ul>
+    <li><a href="#" class="on">Home</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a class="btn btn-light" href="#pricing">See pricing</a>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero" aria-labelledby="h1">
+  <h1 id="h1"><span class="l1">Your double</span><span class="l2">never sleeps</span></h1>
+
+  <div class="figure" id="figure">
+    <img src="hero-cyborg.png" width="1494" height="1053" alt="A digital twin in glossy black armour with orange lights" fetchpriority="high">
+  </div>
+
+  <div class="hero-side rv">
+    <p>A digital twin of you that records your reels while you get on with your day. Your face and voice, no camera needed.</p>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="rv">
+      <div class="chips"><a class="chip" href="#features">Digital Twin</a><a class="chip" href="#process">AI Reels</a></div>
+      <div class="actions">
+        <a class="btn btn-dark" href="#pricing">Choose a plan</a>
+        <a class="play" href="#process">See how it works <span></span></a>
+      </div>
+    </div>
+    <div class="stats rv">
+      <svg class="mini" viewBox="0 0 120 140" aria-hidden="true">
+        <defs><radialGradient id="mh" cx="40%" cy="25%" r="80%"><stop offset="0" stop-color="#777"/><stop offset=".35" stop-color="#2a2a2a"/><stop offset="1" stop-color="#050505"/></radialGradient></defs>
+        <path d="M30 140 C34 112 46 104 60 104 C74 104 86 112 90 140 Z" fill="#141414"/>
+        <rect x="52" y="86" width="16" height="22" fill="#111"/>
+        <ellipse cx="60" cy="52" rx="32" ry="38" fill="url(#mh)"/>
+        <path d="M40 40 q6 -10 14 -6 M66 34 q10 -4 14 6 M38 62 q10 -6 18 0 M64 62 q10 -6 18 0" stroke="#0a0a0a" stroke-width="5" fill="none"/>
+        <line x1="60" y1="16" x2="60" y2="88" stroke="#ff4d1a" stroke-width="2" class="glow"/>
+      </svg>
+      <div class="stat"><b>120</b><span>Reels a month<br>at full scale</span></div>
+      <div class="stat"><b>0h</b><span>Of you<br>on camera</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="sec wrap" aria-labelledby="intro-h">
+  <div class="intro">
+    <div>
+      <h2 class="h2 rv" id="intro-h">Clone once<br><span class="dim">Post forever</span></h2>
+      <p class="rv">You record twenty minutes of footage, one time. We train a photoreal avatar and a voice model that sound, move and gesture like you. From then on every reel, every hook and every language is produced without you stepping in front of a lens.</p>
+      <a class="btn btn-light rv" href="#process">See the process</a>
+    </div>
+    <div class="chipcard rv" aria-hidden="true">
+      <svg viewBox="0 0 640 480" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="phone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b2b2b"/><stop offset=".5" stop-color="#0c0c0c"/><stop offset="1" stop-color="#000"/></linearGradient>
+          <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff4d1a"/><stop offset="1" stop-color="#ff9a3c"/></linearGradient>
+          <filter id="b2"><feGaussianBlur stdDeviation="14"/></filter>
+        </defs>
+        <rect width="640" height="480" fill="#070707"/>
+        <g transform="translate(320 250) rotate(-14)">
+          <rect x="-150" y="-250" width="300" height="520" rx="38" fill="#ff4d1a" opacity=".55" filter="url(#b2)"/>
+          <rect x="-150" y="-250" width="300" height="520" rx="38" fill="url(#edge)"/>
+          <rect x="-142" y="-244" width="284" height="508" rx="32" fill="url(#phone)"/>
+          <rect x="-126" y="-226" width="252" height="470" rx="22" fill="#0a0a0a"/>
+          <ellipse cx="0" cy="-40" rx="64" ry="76" fill="#161616" stroke="#2c2c2c"/>
+          <path d="M-110 180 C-100 90 -50 60 0 60 C50 60 100 90 110 180 Z" fill="#121212"/>
+          <rect x="-4" y="-116" width="8" height="150" fill="#000"/>
+          <rect x="-32" y="-52" width="10" height="8" rx="2" fill="#ffb347"/>
+          <rect x="22" y="-52" width="10" height="8" rx="2" fill="#ffb347"/>
+          <rect x="-96" y="196" width="150" height="10" rx="5" fill="#2a2a2a"/>
+          <rect x="-96" y="214" width="100" height="10" rx="5" fill="#1f1f1f"/>
+          <circle cx="92" cy="208" r="18" fill="#ff4d1a"/>
+          <path d="M87 200 l12 8 l-12 8z" fill="#000"/>
+        </g>
+        <g fill="#ff4d1a" opacity=".8"><rect x="40" y="400" width="8" height="8"/><rect x="56" y="414" width="6" height="6"/><rect x="580" y="60" width="8" height="8"/><rect x="596" y="76" width="5" height="5"/></g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="sec wrap" id="features" aria-labelledby="feat-h">
+  <div class="head-row">
+    <h2 class="h2 rv" id="feat-h">Built for creators<br><span class="dim">who hate filming</span></h2>
+    <p class="lead rv">Not a filter or a cartoon. A twin that looks and sounds like you, and never needs a reshoot.</p>
+  </div>
+  <div class="feats">
+    <article class="feat raised rv">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="#000"><path d="M12 2a6 6 0 0 0-6 6v3a6 6 0 0 0 12 0V8a6 6 0 0 0-6-6Zm-7 19c1-3.5 3.8-5 7-5s6 1.5 7 5H5Z"/></svg></div>
+      <h3>Your face,<br>cloned</h3>
+      <p>A photoreal avatar with your expressions, gestures and lip-sync. Change outfits, sets and lighting without a studio.</p>
+    </article>
+    <article class="feat rv">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="#000"><path d="M12 15a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v7a3 3 0 0 0 3 3Zm6-3a6 6 0 0 1-5 5.9V21h-2v-3.1A6 6 0 0 1 6 12h2a4 4 0 0 0 8 0h2Z"/></svg></div>
+      <h3>Your voice,<br>cloned</h3>
+      <p>Your tone, pace and accent in English, Spanish, German and more. One twin can post in five languages.</p>
+    </article>
+    <article class="feat rv">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="#000"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
+      <h3>Scripts<br>that sell</h3>
+      <p>A content plan built around your niche: hooks, scripts, captions and posting calendar, written by humans who study what goes viral.</p>
+    </article>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="sec process" id="process" aria-labelledby="proc-h">
+  <div class="wrap">
+    <div class="head-row">
+      <h2 class="h2 rv" id="proc-h">From one shoot<br><span class="dim">to a feed on autopilot</span></h2>
+      <p class="lead rv">Your first reels land in seven days. After that, they never stop.</p>
+    </div>
+    <div class="track" id="track">
+      <div class="bar"></div>
+      <div class="step rv"><div class="t">20 min</div><h3>Record once</h3><p>A short guided session on your phone or with our crew. That is the last time you film.</p></div>
+      <div class="step rv"><div class="t">72 h</div><h3>Twin is trained</h3><p>We build your avatar and voice model and send you test clips to approve.</p></div>
+      <div class="step rv"><div class="t">30 days</div><h3>Plan and scripts</h3><p>Strategy call, content pillars, hooks and a full month of scripts mapped to your goals.</p></div>
+      <div class="step rv"><div class="t">Daily</div><h3>Reels delivered</h3><p>Edited, subtitled, ready-to-post reels in your inbox. You approve, you post, you grow.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec wrap" id="pricing" aria-labelledby="price-h">
+  <canvas class="noise" id="noise" aria-hidden="true"></canvas>
+  <div class="head-row">
+    <div>
+      <h2 class="h2 rv" id="price-h">Choose your<br><span class="dim">scale</span></h2>
+      <div class="toggle rv">
+        <button class="switch" id="perReel" role="switch" aria-checked="false" aria-label="Show price per reel"></button>
+        <span>Show price per reel</span>
+      </div>
+    </div>
+    <p class="lead rv">One twin, three ways to use it. Pick how many reels you need each month. No hidden fees.</p>
+  </div>
+  <div class="plans">
+    <article class="plan rv" data-price="300" data-reels="10" data-unit="one-time">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="#ddd"><path d="M12 2a6 6 0 0 0-6 6v3a6 6 0 0 0 12 0V8a6 6 0 0 0-6-6Zm-7 19c1-3.5 3.8-5 7-5s6 1.5 7 5H5Z"/></svg></div>
+      <h3>Starter</h3>
+      <p class="for">For experts who want to test an AI twin before going all in.</p>
+      <div class="price"><b>$300</b><span>one-time</span></div>
+      <h4>What's inside</h4>
+      <ul>
+        <li>1 digital avatar with your face and voice</li>
+        <li>10 scripted, edited reels</li>
+        <li>2-week content plan</li>
+        <li>Subtitles in your brand style</li>
+        <li>1 revision round</li>
+        <li>Delivery in 7 days</li>
+      </ul>
+      <a class="btn" href="mailto:hello@twinly.ai?subject=Starter%20twin%20(%24300)&body=Hi!%20I%27d%20like%20to%20start%20with%20the%20Starter%20package.">Start with Starter</a>
+    </article>
+    <article class="plan pro rv" data-price="1000" data-reels="40" data-unit="/ month">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="#000"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
+      <h3>Pro</h3>
+      <p class="for">For creators and coaches who want to post every day.</p>
+      <div class="price"><b>$1,000</b><span>/ month</span></div>
+      <h4>What's inside</h4>
+      <ul>
+        <li>Everything in Starter</li>
+        <li>40 reels per month</li>
+        <li>30-day content plan + strategy call</li>
+        <li>Hooks, captions and hashtags</li>
+        <li>2 avatar looks with different outfits and sets</li>
+        <li>Unlimited revisions, priority queue</li>
+      </ul>
+      <a class="btn" href="mailto:hello@twinly.ai?subject=Pro%20twin%20(%241%2C000%2Fmo)&body=Hi!%20I%27d%20like%20the%20Pro%20package.">Go Pro</a>
+    </article>
+    <article class="plan rv" data-price="2500" data-reels="120" data-unit="/ month">
+      <div class="badge"><svg viewBox="0 0 24 24" fill="#ddd"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-9Z"/></svg></div>
+      <h3>Elite</h3>
+      <p class="for">For brands and teams who want a full AI media department.</p>
+      <div class="price"><b>$2,500</b><span>/ month</span></div>
+      <h4>What's inside</h4>
+      <ul>
+        <li>Everything in Pro</li>
+        <li>120 reels per month, multi-platform</li>
+        <li>Twin speaks 5 languages</li>
+        <li>4 avatar looks + custom studio set</li>
+        <li>Monthly analytics review and plan reset</li>
+        <li>Dedicated producer, 24h turnaround</li>
+      </ul>
+      <a class="btn" href="mailto:hello@twinly.ai?subject=Elite%20twin%20(%242%2C500%2Fmo)&body=Hi!%20I%27d%20like%20to%20talk%20about%20the%20Elite%20package.">Book Elite call</a>
+    </article>
+  </div>
+  <p class="note rv">Your avatar and voice model belong to you. Cancel monthly plans any time.</p>
+</section>
+
+<!-- FAQ -->
+<section class="sec wrap" id="faq" aria-labelledby="faq-h">
+  <div class="faq">
+    <h2 class="h2 rv" id="faq-h">Questions,<br><span class="dim">answered</span></h2>
+    <div>
+      <details class="rv" open><summary>Will it really look and sound like me?</summary><p>Yes. The avatar is trained on your own footage and the voice model on your own recordings. You approve test clips before anything is published, and we retrain until you are happy.</p></details>
+      <details class="rv"><summary>How much of my time does it take?</summary><p>About twenty minutes of recording once, plus a 45-minute strategy call on Pro and Elite. After that you only approve reels, which usually takes five minutes a week.</p></details>
+      <details class="rv"><summary>Who owns my digital twin?</summary><p>You do. Your likeness is used only for your content, never for anyone else, and we delete the models on request when you leave.</p></details>
+      <details class="rv"><summary>Which platforms do you make reels for?</summary><p>Instagram Reels, TikTok, YouTube Shorts and LinkedIn video. Every reel is vertical 9:16, with subtitles burned in or as separate files.</p></details>
+      <details class="rv"><summary>Is my data safe?</summary><p>Source footage and models are stored encrypted, access is limited to your producer, and every reel carries the AI disclosure that platforms require.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec wrap cta" aria-labelledby="cta-h">
+  <h2 class="h2 rv" id="cta-h">Stop filming<br><span class="dim">Start posting</span></h2>
+  <p class="rv">Book a 15-minute call. We'll show you a test reel made from your public videos before you pay anything.</p>
+  <a class="btn btn-accent rv" href="mailto:hello@twinly.ai?subject=Book%20a%20call%20%E2%80%94%20AI%20twin">Book a free call</a>
+</section>
+</main>
+
+<footer>
+  <div class="foot-top">
+    <span>© 2026 twinly. AI digital twins for creators.</span>
+    <nav><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="mailto:hello@twinly.ai">hello@twinly.ai</a></nav>
+  </div>
+  <div class="big" aria-hidden="true">twinl<b>y</b></div>
+</footer>
+
+<script>
+// wrap the first line of each section heading so it can grow on its own
+document.querySelectorAll('.h2').forEach(h => {
+  const top = document.createElement('span'); top.className = 'top';
+  while (h.firstChild && h.firstChild.nodeName !== 'BR') top.appendChild(h.firstChild);
+  h.prepend(top);
+});
+
+// after the first hover, leaving a heading eases the bottom line back instead of snapping
+document.querySelectorAll('.h2').forEach(h =>
+  h.addEventListener('mouseenter', () => h.classList.add('touched'), {once: true}));
+
+// hover growth of +4px font size, expressed as a scale so the layout doesn't reflow
+const heads = document.querySelectorAll('.h2, .feat h3, .plan h3, .step h3');
+const setGrow = () => heads.forEach(h => {
+  const fs = parseFloat(getComputedStyle(h).fontSize);
+  h.style.setProperty('--grow', ((fs + 4) / fs).toFixed(4));
+});
+setGrow(); addEventListener('resize', setGrow);
+document.fonts && document.fonts.ready.then(setGrow);
+
+// neural-noise background behind pricing (vanilla port of the NeuralNoise shader, tinted orange)
+(() => {
+  const canvas = document.getElementById('noise');
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const COLOR = [1.0, 0.36, 0.08], SPEED = 0.001;
+  const vs = `precision mediump float;varying vec2 vUv;attribute vec2 a_position;
+    void main(){vUv=.5*(a_position+1.);gl_Position=vec4(a_position,0.,1.);}`;
+  const fs = `precision mediump float;varying vec2 vUv;
+    uniform float u_time;uniform float u_ratio;uniform vec2 u_pointer_position;uniform vec3 u_color;uniform float u_speed;
+    vec2 rotate(vec2 uv,float th){return mat2(cos(th),sin(th),-sin(th),cos(th))*uv;}
+    float neuro_shape(vec2 uv,float t,float p){
+      vec2 sine_acc=vec2(0.);vec2 res=vec2(0.);float scale=8.;
+      for(int j=0;j<15;j++){
+        uv=rotate(uv,1.);sine_acc=rotate(sine_acc,1.);
+        vec2 layer=uv*scale+float(j)+sine_acc-t;
+        sine_acc+=sin(layer)+2.4*p;
+        res+=(.5+.5*cos(layer))/scale;
+        scale*=1.2;
+      }
+      return res.x+res.y;
+    }
+    void main(){
+      vec2 uv=.5*vUv;uv.x*=u_ratio;
+      vec2 pointer=vUv-u_pointer_position;pointer.x*=u_ratio;
+      float p=clamp(length(pointer),0.,1.);p=.5*pow(1.-p,2.);
+      float t=u_speed*u_time;
+      float noise=neuro_shape(uv,t,p);
+      noise=1.2*pow(noise,3.);noise+=pow(noise,10.);
+      noise=max(0.,noise-.5);
+      noise*=(1.-length(vUv-.5));
+      gl_FragColor=vec4(u_color*noise,noise);
+    }`;
+  const compile = (src, type) => {
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(s)); return null; }
+    return s;
+  };
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(vs, gl.VERTEX_SHADER));
+  gl.attachShader(prog, compile(fs, gl.FRAGMENT_SHADER));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  gl.useProgram(prog);
+  const u = {};
+  for (let i = 0; i < gl.getProgramParameter(prog, gl.ACTIVE_UNIFORMS); i++) {
+    const n = gl.getActiveUniform(prog, i).name; u[n] = gl.getUniformLocation(prog, n);
+  }
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform3f(u.u_color, ...COLOR);
+  gl.uniform1f(u.u_speed, SPEED);
+
+  const resize = () => {
+    const d = Math.min(devicePixelRatio, 2), r = canvas.getBoundingClientRect();
+    canvas.width = r.width * d; canvas.height = r.height * d;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.uniform1f(u.u_ratio, canvas.width / canvas.height);
+  };
+  resize(); addEventListener('resize', resize);
+
+  // pointer is tracked relative to the canvas, so the noise reacts where the cursor is
+  const ptr = {x: .5, y: .5, tX: .5, tY: .5};
+  const track = (x, y) => { const r = canvas.getBoundingClientRect(); ptr.tX = (x - r.left) / r.width; ptr.tY = 1 - (y - r.top) / r.height; };
+  addEventListener('pointermove', e => track(e.clientX, e.clientY), {passive: true});
+  addEventListener('touchmove', e => e.targetTouches[0] && track(e.targetTouches[0].clientX, e.targetTouches[0].clientY), {passive: true});
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let visible = false, raf = 0;
+  const frame = now => {
+    ptr.x += (ptr.tX - ptr.x) * .2; ptr.y += (ptr.tY - ptr.y) * .2;
+    gl.uniform1f(u.u_time, now);
+    gl.uniform2f(u.u_pointer_position, ptr.x, ptr.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    if (visible && !reduce) raf = requestAnimationFrame(frame);
+  };
+  // only animate while the pricing section is on screen
+  new IntersectionObserver(([e]) => {
+    visible = e.isIntersecting; cancelAnimationFrame(raf);
+    if (visible) raf = requestAnimationFrame(frame);
+  }).observe(canvas);
+})();
+
+// price per reel toggle
+const sw = document.getElementById('perReel');
+const fmt = n => '$' + n.toLocaleString('en-US', {maximumFractionDigits: n < 100 ? 2 : 0});
+sw.addEventListener('click', () => {
+  const on = sw.getAttribute('aria-checked') !== 'true';
+  sw.setAttribute('aria-checked', on);
+  document.querySelectorAll('.plan').forEach(p => {
+    const price = +p.dataset.price, reels = +p.dataset.reels;
+    p.querySelector('.price b').textContent = on ? fmt(price / reels) : fmt(price);
+    p.querySelector('.price span').textContent = on ? `per reel, ${reels} reels` : p.dataset.unit;
+  });
+});
+</script>
+</body>
+</html>
