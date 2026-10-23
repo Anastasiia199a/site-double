@@ -193,6 +193,8 @@ details p{padding:0 28px 28px;color:var(--ink-2);max-width:640px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form .btn{width:100%;border:0;cursor:pointer;padding-block:18px;font-size:16px}
 .form .btn[disabled]{opacity:.6;cursor:wait}
+/* after a successful send the button turns green and says so */
+.form .btn.sent,.form .btn.sent:hover{background:#1fa35b;border-color:#1fa35b;color:#fff;opacity:1;cursor:default;box-shadow:0 0 0 2px #1fa35b,0 0 30px rgba(31,163,91,.45)}
 .form-status{font-size:15px;min-height:1.5em}
 .form-status.ok{color:#7ddc9a}
 .form-status.err{color:#ff8a6b}
@@ -519,7 +521,7 @@ footer{padding:60px var(--m) 28px;overflow:hidden}
 <footer>
   <div class="foot-top">
     <span>© 2026 twinly. AI digital twins for creators.</span>
-    <nav><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="mailto:hello@twinly.ai">hello@twinly.ai</a></nav>
+    <nav><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="#apply">Leave a request</a></nav>
   </div>
   <div class="big" aria-hidden="true">twinl<b>y</b></div>
 </footer>
@@ -665,14 +667,23 @@ form.addEventListener('submit', async e => {
     const json = await res.json();
     if (!json.ok) throw new Error(json.error || 'Request failed');
     form.reset();
-    formStatus.textContent = 'Thank you! Your request is sent. We will reply within 24 hours.';
+    btn.classList.add('sent');
+    btn.textContent = 'Request sent ✓';
+    formStatus.textContent = 'Thank you! We will reply within 24 hours.';
     formStatus.classList.add('ok');
   } catch (err) {
+    btn.disabled = false; btn.textContent = 'Send request';
     formStatus.textContent = 'Something went wrong. Please try again in a minute.';
     formStatus.classList.add('err');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Send request';
   }
+});
+
+// once the visitor starts typing again, the green "sent" button becomes a normal send button
+form.addEventListener('input', () => {
+  const btn = form.querySelector('button');
+  if (!btn.classList.contains('sent')) return;
+  btn.classList.remove('sent'); btn.disabled = false; btn.textContent = 'Send request';
+  formStatus.textContent = ''; formStatus.className = 'form-status';
 });
 
 // price per reel toggle
